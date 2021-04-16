@@ -1,0 +1,92 @@
+<html>
+  <head>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div id='root'>
+
+    </div>
+    <script type='text/babel'>
+    const credentials = [
+    { username: 'lucy', password: 'lucy_pw' },
+    { username: 'larry', password: 'larry_pw' },
+    { username: 'moe', password: 'moe_pw' },
+  ];
+      const {Component} = React;
+      class App extends Component{
+        constructor() {
+          super();
+          this.state = {
+            auth: {}
+          };
+          this.login = this.login.bind(this);
+          this.logout = this.logout.bind(this);
+          //this.exchangeToken = this.exchangeToken.bind(this);
+        }
+
+        logout() {
+          window.localStorage.removeItem('token');
+          this.setState({auth: {}})
+        }
+        componentDidMount() {
+          this.exchangeToken();
+        }
+        //in componentDidMount set token to the token property that is held in localStorage
+        async exchangeToken() {
+          const token = window.localStorage.getItem('token');
+          if(token){
+            const getResponse = await axios.get('/api/auth', {
+            headers: {
+              authorization: token
+            }
+          });
+            const user = getResponse.data
+            this.setState({auth:user})
+          }
+
+        }
+
+        async login(credentials) {
+          const response = await axios.post('/api/auth', credentials)
+          const {token} = response.data;
+          //store token in localStorage to persist the token if there is a hard refresh
+          window.localStorage.setItem('token', token);
+          const getResponse = await axios.get('/api/auth', {
+            headers: {
+              authorization: token
+            }
+          });
+          const user = getResponse.data
+          this.setState({auth:user})
+        }
+        render() {
+          const {auth} = this.state;
+          const {login, logout} = this;
+          if(!auth.id) {
+            return (
+              <div>
+                {
+                  credentials.map(credential => {
+                    return (
+                      <button onClick={() => login(credential)}key = {credential.username}>{credential.username}</button>
+                    )
+                  })
+                }
+              </div>
+            );
+          }
+          return (
+            <div>
+              Welcome {auth.username}!
+              <button onClick={logout}>Logout {auth.username}</button>
+            </div>
+          )
+        }
+      }
+      ReactDOM.render(<App />, document.querySelector('#root'));
+    </script>
+  </body>
+</html>
