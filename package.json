@@ -1,0 +1,31 @@
+{
+  "name": "JWT-Authentications",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "test:dev": "JWT=shh DATABASE_URL=postgres://localhost/acme_db_test npm run test -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rfmcmillan/JWT-Authentications.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rfmcmillan/JWT-Authentications/issues"
+  },
+  "homepage": "https://github.com/rfmcmillan/JWT-Authentications#readme",
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.6.0",
+    "sequelize": "^6.6.2"
+  }
+}
